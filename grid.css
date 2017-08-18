@@ -1,0 +1,439 @@
+﻿/*MIT License
+
+Copyright (c) 2017 Israel Barth Rubio
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.*/
+
+.grid-container {
+    width: 100%;
+    border-collapse:collapse;
+    overflow-y: hidden;
+    font-size: 12px;
+    display: inline-block;
+    position: relative;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
+
+.grid-resize-return {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 100000;
+}
+
+.grid-header-container {
+    position: absolute;
+    z-index: 1001;
+    overflow: hidden;
+}
+
+.grid-row-header-group {
+    position: absolute;
+    background-color: white;
+    z-index: 1000;
+}
+
+.grid-row-header {
+    background-color: #efefef;
+    color: #757575;
+    border-bottom: 1px solid #b5b5b5;
+    border-left: 1px solid #b5b5b5;
+    border-right: 1px solid #b5b5b5;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.grid-header-corner {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    background-color: white;
+    z-index: 1000;
+}
+
+.grid-header-corner-inside {
+    background: -webkit-linear-gradient(#65a7ef, #1b71b9);
+    background: -o-linear-gradient(#65a7ef, #1b71b9);
+    background: -moz-linear-gradient(#65a7ef, #1b71b9);
+    background: linear-gradient(#65a7ef, #1b71b9);
+    border-left: 1px solid #1f74bb;
+    border-bottom: 1px solid #1f74bb;
+    border-top: 1px solid #1f74bb;
+    border-right: 1px solid #1f74bb;
+    border-radius: 6px 0px 0px 0px;
+    box-sizing: border-box;
+}
+
+.grid-header-group {
+    overflow: hidden;
+    white-space: nowrap;
+    color: #fff;
+}
+
+.grid-summary-group {
+    overflow: hidden;
+    white-space: nowrap;
+    color: #fff;
+}
+
+.grid-summary-cell {
+    border-right: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    display: inline-block;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0px 5px 0px 5px;
+    color: black;
+    text-align: right;
+}
+
+.grid-column-group {
+    display: inline-block;
+}
+
+.grid-header-cell {
+    border-right: 1px solid #1f74bb;
+    border-bottom: 1px solid #1f74bb;
+    border-top: 1px solid #1f74bb;
+    position: relative;
+    width: 100%;
+    display: inline-block;
+    box-sizing: border-box;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-left: 5px;
+    vertical-align: top;
+    background: -webkit-linear-gradient(#65a7ef, #1b71b9);
+    background: -o-linear-gradient(#65a7ef, #1b71b9);
+    background: -moz-linear-gradient(#65a7ef, #1b71b9);
+    background: linear-gradient(#65a7ef, #1b71b9);
+}
+
+.grid-header-cell-first {
+    border-radius: 6px 0px 0px 0px;
+    border-left: 1px solid #1f74bb;
+}
+
+.grid-header-cell:last-child {
+    border-radius: 0px 6px 0px 0px;
+}
+
+.grid-header-cell-redim {
+    width: 5px;
+    position: absolute;
+    top: 0;
+    right: 0px;
+    z-index: 1000;
+    cursor: col-resize;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
+
+.grid-header-cell-redim:hover {
+    background-color: #145992;
+}
+
+.grid-cell {
+    border-right: 1px solid #b5b5b5;
+    border-bottom: 1px solid #b5b5b5;
+    position: relative;
+    width: 100%;
+    display: inline-block;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0px 5px 0px 5px;
+}
+
+.grid-cell-numeric {
+    text-align: right;
+}
+
+.grid-cell-disabled {
+    background-color: #f9f9f9;
+    color: #757575;
+}
+
+.grid-cell-selected {
+}
+
+.grid-cell:first-child {
+    border-left: 1px solid #b5b5b5;
+}
+
+.grid-data-group {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.grid-row-group {
+}
+
+.grid-selection {
+    pointer-events: none;
+    border: 2px solid #448fff;
+    background-color: rgba(68,143,255,0.25);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: none;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;   
+}
+
+.grid-edit-cell {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: none;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;   
+}
+
+.grid-edit-cell-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 5px;
+}
+
+.grid-cell-open-img {
+    cursor: pointer;
+    position: absolute;
+    right: 5px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+.grid-row-move-img {
+    cursor: pointer;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    -webkit-transition: all 0.25s ease;
+    -moz-transition: all 0.25s ease;
+    transition: all 0.25s ease;
+}
+
+.grid-row-move-target-img {
+    cursor: pointer;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.grid-row-header-group-dragging .grid-row-move-img {
+    display: none;
+}
+
+.grid-row-header-group-dragging .grid-row-move-target-img {
+    display: block;
+}
+
+.grid-edit-cell-combobox-item {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+    height: 24px;
+    line-height: 24px;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ccc;
+    -webkit-transition: all 0.25s ease;
+    -moz-transition: all 0.25s ease;
+    transition: all 0.25s ease;
+}
+
+.grid-edit-cell-combobox-item-disabled {
+    display: none;
+}
+
+.grid-edit-cell-combobox-item:last-child {
+    border-bottom: 0px;
+}
+
+.grid-edit-cell-combobox-item:hover {
+    background-color: #f89b1c;
+    color: #fff;
+}
+
+.grid-edit-cell-combobox {
+    max-height: 150px;
+    background-color: white;
+    text-align: center;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    overflow: auto;
+    width: 150px;
+    display: none;
+    border: 1px solid #ccc;
+    font-size: 12px;
+    box-sizing: border-box;
+    z-index: 100000;
+    box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);
+}
+
+.img_grid_header_filter {
+    cursor: pointer; 
+    float: right; 
+    height: 14px; 
+    width: 14px; 
+    margin-top: 6px; 
+    margin-right: 3px;
+}
+
+.grid-filter-column-item {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+    height: 24px;
+    line-height: 24px;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ccc;
+    -webkit-transition: all 0.25s ease;
+    -moz-transition: all 0.25s ease;
+    transition: all 0.25s ease;
+}
+
+.grid-filter-column-item-disabled {
+    pointer-events: none;
+    background-color: #eee;
+    color: gray;
+    user-select: none;
+}
+
+.grid-filter-column-item-disabled img {
+    opacity: 0.5;
+}
+
+/*.grid-filter-column-item:last-child {
+    border-bottom: 0px;
+}*/
+
+.grid-filter-column-item-double:last-child {
+    border-bottom: 0px;
+}
+
+.grid-filter-column-item:hover {
+    background-color: #f89b1c;
+    color: #fff;
+}
+
+.grid-filter-column {
+    max-height: 150px;
+    background-color: white;
+    text-align: center;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    overflow: auto;
+    width: 150px;
+    display: none;
+    border: 1px solid #ccc;
+    font-size: 12px;
+    box-sizing: border-box;
+    z-index: 100000;
+    box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);
+}
+
+.grid-filter-column-item-double {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    height: 48px;
+    line-height: 48px;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ccc;
+    -webkit-transition: all 0.25s ease;
+    -moz-transition: all 0.25s ease;
+    transition: all 0.25s ease;
+}
+
+.grid_filter_tree_container span.node a {
+    padding-left: 3px;
+    text-decoration: none;
+    color: black;
+    font-size: 13px;
+}
+
+.grid_filter_tree_container span.node_selected a {
+    padding-left: 3px;
+}
+
+.grid_filter_tree_container [type='checkbox'] {
+    margin-right: 3px;
+}
+
+.grid_filter_tree_container label {
+    margin-bottom: 0px;
+    font-weight: normal;
+    width: 95%;
+    overflow: hidden;
+    line-height: 15px;
+}
+
+.grid_header_cell_filtered {
+    background: linear-gradient(rgb(251, 200, 148), rgb(247, 152, 55));
+}
+
+#grid-horizontal-resize-line {
+    position: absolute;
+    float: left;
+    width: 0px;
+    height: 100vh;
+    border-left: 1px dashed black;
+    box-sizing: border-box;
+    top: 0;
+    z-index: 99999;
+}
+
+.grid-row-group:hover {
+    background-color: #e4e4e4 !important;
+}
