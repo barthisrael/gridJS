@@ -1,2 +1,2 @@
 # gridJS
-This is a component written in javascript for managing excel like spreadsheets.
+This is a component written in javascript to manage excel like spreadsheets.
