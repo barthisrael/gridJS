@@ -317,7 +317,7 @@ SOFTWARE.*/
     box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);
 }
 
-.img_grid_header_filter {
+.img-grid-header-filter {
     cursor: pointer; 
     float: right; 
     height: 14px; 
@@ -396,22 +396,22 @@ SOFTWARE.*/
     transition: all 0.25s ease;
 }
 
-.grid_filter_tree_container span.node a {
+.grid-filter-tree-container span.node a {
     padding-left: 3px;
     text-decoration: none;
     color: black;
     font-size: 13px;
 }
 
-.grid_filter_tree_container span.node_selected a {
+.grid-filter-tree-container span.node_selected a {
     padding-left: 3px;
 }
 
-.grid_filter_tree_container [type='checkbox'] {
+.grid-filter-tree-container [type='checkbox'] {
     margin-right: 3px;
 }
 
-.grid_filter_tree_container label {
+.grid-filter-tree-container label {
     margin-bottom: 0px;
     font-weight: normal;
     width: 95%;
@@ -419,7 +419,7 @@ SOFTWARE.*/
     line-height: 15px;
 }
 
-.grid_header_cell_filtered {
+.grid-header-cell-filtered {
     background: linear-gradient(rgb(251, 200, 148), rgb(247, 152, 55));
 }
 
@@ -436,4 +436,15 @@ SOFTWARE.*/
 
 .grid-row-group:hover {
     background-color: #e4e4e4 !important;
+}
+
+.grid-dragging-row {
+    position: absolute;
+    overflow: hidden;
+    z-index: 1000000000;
+    opacity: 1.0;
+}
+
+.grid-ghost {
+    opacity: 0.4;
 }
