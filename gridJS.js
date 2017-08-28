@@ -2025,12 +2025,14 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
                                 if(v_rawIndexOf != -1) {
                                     this.data.rendered.raw.rows[p_row].filteredByColumns.splice(v_rawIndexOf, 1);
+                                    this.data.rendered.raw.rows.splice(p_row, 1);
                                 }
 
                                 var v_stringIndexOf = this.data.rendered.string.rows[p_row].filteredByColumns.indexOf(p_column);
 
                                 if(v_stringIndexOf != -1) {
                                     this.data.rendered.string.rows[p_row].filteredByColumns.splice(v_stringIndexOf, 1);
+                                    this.data.rendered.string.rows.splice(p_row, 1);
                                 }
                             }
                         }
