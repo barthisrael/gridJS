@@ -303,12 +303,14 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
                 var v_rawCell = {
                     value: v_rawValue
+                    cssText: ''
                 };
 
                 v_rawRow.push(v_rawCell);
 
                 var v_stringCell = {
-                    value: String(v_rawValue)
+                    value: String(v_rawValue),
+                    cssText: ''
                 };
 
                 v_stringRow.push(v_stringCell);
@@ -1298,23 +1300,6 @@ function startGrid(p_containerDivId, p_draggableRows) {
             this.elements.dataGroupDiv.focus();
         },
         /// <summary>
-        /// Returns cell dom element at a specified index.
-        /// </summary>
-        /// <param name="p_row">The row index of the cell.</param>
-        /// <paramref name="p_row">Takes an integer.
-        /// <param name="p_column">The column index of the cell.</param>
-        /// <paramref name="p_column">Takes an integer.
-        getCellDivAt: function(p_row, p_column) {
-            if(p_row - this.controls.currentScrollIndex < 0) {
-                return null;
-            }
-            else if(p_row - this.controls.currentScrollIndex >= this.elements.dataGroupDiv.childNodes.length) {
-                return null;
-            }
-
-            return this.elements.dataGroupDiv.childNodes[p_row - this.controls.currentScrollIndex].childNodes[p_column];
-        },
-        /// <summary>
         /// Fix selection div position after a select occurs.
         /// </summary>
         fixSelectPosition: function() {
@@ -1353,6 +1338,33 @@ function startGrid(p_containerDivId, p_draggableRows) {
             else if(v_diffRight > 0) {
                 this.elements.componentDiv.scrollLeft += v_diffRight;
             }
+        },
+        /// <summary>
+        /// Returns cell dom element at a specified index.
+        /// </summary>
+        /// <param name="p_row">The row index of the cell.</param>
+        /// <paramref name="p_row">Takes an integer.
+        /// <param name="p_column">The column index of the cell.</param>
+        /// <paramref name="p_column">Takes an integer.
+        getCellDivAt: function(p_row, p_column) {
+            if(p_row - this.controls.currentScrollIndex < 0) {
+                return null;
+            }
+            else if(p_row - this.controls.currentScrollIndex >= this.elements.dataGroupDiv.childNodes.length) {
+                return null;
+            }
+
+            return this.elements.dataGroupDiv.childNodes[p_row - this.controls.currentScrollIndex].childNodes[p_column];
+        },
+        /// <summary>
+        /// Returns cell cssText at a specified index.
+        /// </summary>
+        /// <param name="p_row">The row index of the cell.</param>
+        /// <paramref name="p_row">Takes an integer.
+        /// <param name="p_column">The column index of the cell.</param>
+        /// <paramref name="p_column">Takes an integer.
+        getStyleAt: function(p_row, p_column) {
+            return this.data.rendered.raw.rows[p_row][p_column].cssText;
         },
         /// <summary>
         /// Move the selection div in response to user interactions by keyboard.
@@ -1595,7 +1607,9 @@ function startGrid(p_containerDivId, p_draggableRows) {
                             v_cellDiv.innerHTML = this.data.rendered.raw.rows[i][j].value;
                         }
 
-                        //TODO: verificar questão de spreadsheet
+                        if(this.data.rendered.raw.rows[i][j].cssText != null && typeof this.data.redenred.raw.rows[i][j].cssText == 'string') {
+                            v_cellDiv.style.cssText = this.data.redenred.raw.rows[i][j].cssText;
+                        }
 
                         v_cellDiv.v_renderer = this.columns[j].type;
 
@@ -1736,6 +1750,19 @@ function startGrid(p_containerDivId, p_draggableRows) {
                 this.callbacks.afterSelectCells(this, this.controls.selection);
             }
         },
+        /// Sets cell cssText at a specified index.
+        /// </summary>
+        /// <param name="p_row">The row index of the cell.</param>
+        /// <paramref name="p_row">Takes an integer.
+        /// <param name="p_column">The column index of the cell.</param>
+        /// <paramref name="p_column">Takes an integer.
+        /// <param name="p_cssText">The css to be applied to the cell.</param>
+        /// <paramref name="p_cssText">Takes a string.
+        setStyleAt: function(p_row, p_column, p_cssText) {
+            this.data.rendered.raw.rows[p_row][p_column].cssText = p_cssText;
+            this.data.rendered.string.rows[p_row][p_column].cssText = p_cssText;
+        },
+        /// <summary>
         /// <summary>
         /// Starts editing a cell in the grid.
         /// </summary>
