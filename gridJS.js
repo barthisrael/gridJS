@@ -1,4 +1,4 @@
-﻿/*MIT License
+/*MIT License
 
 Copyright (c) 2017 Israel Barth Rubio
 
@@ -26,16 +26,16 @@ SOFTWARE.*/
 /// <param name="p_searchElement">Javascript element to be searched for.</param>
 Array.prototype.binaryIndexOf = function(p_searchElement) {
     'use strict';
-
+ 
     var v_minIndex = 0;
     var v_maxIndex = this.length - 1;
     var v_currentIndex;
     var v_currentElement;
-
+ 
     while(v_minIndex <= v_maxIndex) {
         v_currentIndex = (v_minIndex + v_maxIndex) / 2 | 0;
         v_currentElement = this[v_currentIndex];
-
+ 
         if(v_currentElement < p_searchElement) {
             v_minIndex = v_currentIndex + 1;
         }
@@ -46,7 +46,7 @@ Array.prototype.binaryIndexOf = function(p_searchElement) {
             return v_currentIndex;
         }
     }
-
+ 
     return -1;
 }
 
@@ -105,14 +105,20 @@ function startGrid(p_containerDivId, p_draggableRows) {
         //Set of functions to be called after some operations in grid component. After starting the grid component, you should replace the callbacks as you want.
         callbacks: {
             /// <summary>
-			/// Function called after a grid cell data is changed.
-			/// </summary>
-			/// <param name="p_row">The grid row number where changes were made.</param>
-			/// <paramref name="p_row">Takes an integer.
+            /// Function called after a grid cell data is changed.
+            /// </summary>
+            /// <param name="p_component">The grid component where changes were made.</param>
+            /// <paramref name="p_component">Takes a javascript object.
+            /// <param name="p_row">The grid row number where changes were made.</param>
+            /// <paramref name="p_row">Takes an integer.
             /// <param name="p_column">The grid column number where changes were made.</param>
             /// <paramref name="p_column">Takes an integer.
             /// <param name="p_oldValue">The previous value in the grid cell.</param>
             /// <param name="p_newValue">The new value in the grid cell.</param>
+            /// <param name="p_dataMode">If the index is to be applied in all data or in rendered(filtered) data.</param>
+            /// <paramref name="p_dataMode">Takes a string between 'all' and 'rendered'.
+            /// <param name="p_isFiltered">If the cell belongs to a row that is filtered after its value has changed.</param>
+            /// <paramref name="p_isFiltered">Takes a boolean.
             afterChangeCellData: null,
             /// <summary>
             /// Function called after this grid is rendered.
@@ -133,8 +139,14 @@ function startGrid(p_containerDivId, p_draggableRows) {
             /// <paramref name="p_column">Takes an integer.
             afterRenderCell: null,
             /// <summary>
-            /// Function called after this a row is moved (drag n drop). Not implemented yet
+            /// Function called after this a row is moved (drag n drop).
             /// </summary>
+            /// <param name="p_component">This grid object.</param>
+            /// <paramref name="p_component">Grid javascript object instance.
+            /// <param name="p_sourceIndex">From where the row was cutted.</param>
+            /// <paramref name="p_sourceIndex">Takes an integer.
+            /// <param name="p_targetIndex">To where the row was dropped.</param>
+            /// <paramref name="p_targetIndex">Takes an integer.
             afterMoveRow: null,
             /// <summary>
             /// Function called after a selection changes in the grid.
@@ -248,7 +260,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             if(p_data.length != this.columns.length) {
                 return;
             }
-
+            
             var v_rawRow = [];
             v_rawRow.filteredByColumns = [];
 
@@ -302,7 +314,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                 }
 
                 var v_rawCell = {
-                    value: v_rawValue
+                    value: v_rawValue,
                     cssText: ''
                 };
 
@@ -373,7 +385,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
         /// <param name="p_hasFilter">If this columns may be filtered.</param>
         /// <paramref name="p_hasFilter">Takes a boolean.
         /// <param name="p_comboboxSource">The combobox source values.</param>
-        /// <paramref name="p_comboboxSource">Takes an array with the combobox options. Will be used just if the column type is 'combobox'.
+        /// <paramref name="p_comboboxSource">Takes an array with the combobox options, each with the following structure: {text, value}. Will be used just if the column type is 'combobox'.
         /// <param name="p_hasSummary">If we should calculate total and subtotal for this column in the header.</param>
         /// <paramref name="p_hasSummary">Takes a boolean. Will be used just if the column type is either 'integer' or 'float'.
         addColumn: function(p_name, p_type, p_width, p_disabled, p_hasFilter, p_comboboxSource, p_hasSummary) {
@@ -397,6 +409,16 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
             if(v_column.type == 'combobox') {
                 v_column.source = p_comboboxSource;
+
+                v_column.source.getValueByText = function(p_text) {
+                    for(var i = 0; i < this.length; i++) {
+                        if(this[i].text == p_text) {
+                            return this[i].value;
+                        }
+                    }
+
+                    return null;
+                };
             }
 
             //Used for summary porpuses. Will be created for every column, but used just in integer or float ones, when required.
@@ -458,11 +480,11 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
                 v_headerCell.appendChild(v_img);
             }
-
+            
             var v_redimCell = document.createElement('div');
             v_redimCell.style.height = this.configs.headerHeight + 'px';
             v_redimCell.classList.add('grid-header-cell-redim');
-            v_redimCell.title = 'Click and drag to redimension the column ' + v_column.name + '.';
+            v_redimCell.title = 'Click and drag to redimension column ' + v_column.name + '.';
 
             v_redimCell.addEventListener(
                 'mousedown',
@@ -508,7 +530,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
                                 //Resize data cells
                                 for(var i = 0; i < p_component.elements.dataGroupDiv.childNodes.length; i++) {
-                                    p_component.elements.dataGroupDiv.childNodes[i].childNodes[p_component.controls.resizeColumn.index].style.width = v_newWidth + 'px';
+                                    p_component.elements.dataGroupDiv.childNodes[i].childNodes[p_component.controls.resizeColumn.index].style.width = v_newWidth + 'px';                  
                                 }
 
                                 //Refreshing selection
@@ -534,7 +556,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                     );
 
                     document.body.appendChild(v_resizeReturn);
-
+                    
                     p_component.controls.resizeColumn.startWidth = p_event.screenX;
                     p_component.controls.resizeColumn.index = p_index;
                     p_component.controls.resizeColumn.resizeDiv = v_resizeReturn;
@@ -559,7 +581,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             this.controls.filterColumn.clearAllFilters = false;
 
             //Save previous filtered values
-            p_column.filter.previousSelectedValues = [];
+            p_column.filter.previousSelectedValues = []; 
 
             for(var i = 0; i < p_column.filter.selectedValues.length; i++) {
                 p_column.filter.previousSelectedValues.push(p_column.filter.selectedValues[i]);
@@ -577,7 +599,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             //Create button to clear all filters in the grid
             var v_clearAllFiltersDiv = document.createElement('div');
             v_clearAllFiltersDiv.classList.add('grid-filter-column-item');
-            v_clearAllFiltersDiv.innerHTML = '<img style="float: left; margin-left: 5px; margin-right: 5px;" src="img/clear.png" />Limpar todos os filtros da tabela';
+            v_clearAllFiltersDiv.innerHTML = '<img style="float: left; margin-left: 5px; margin-right: 5px;" src="img/clear.png" />Clean all table filters';
 
             v_clearAllFiltersDiv.addEventListener(
                 'click',
@@ -731,7 +753,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                    }
                     }
 
-                    //Converts to a better search engine
+                    //Converts to a better search engine 
                     p_component.controls.filterColumn.column.filter.selectedValues = p_component.controls.filterColumn.column.filter.selectedValues.unique();
 
                     for(var i = 0; i < p_component.columns.length; i++) {
@@ -960,7 +982,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
 	                                v_checkBoxInclude.checked = p_node.tag.checked;
                                 }
-
+                                
                                 break;
                             }
                         }
@@ -988,7 +1010,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 			                            for(var i = 0; i < p_component.childNodes.length; i++) {
 			                                if(p_component.childNodes[i].tag.type == 'item') {
 			                                    v_numItems++;
-
+	                                                  
 			                                    if(p_component.childNodes[i].tag.checked) {
 			                                        v_numChecked++;
 			                                    }
@@ -1004,7 +1026,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 			                            }
 			                        }
 			                        else {
-			                            //If a item was unchecked then we guarantee that not all items are selected
+			                            //If a item was unchecked then we guarantee that not all items are selected      
 		                                p_component.childNodes[0].tag.checked = false;
 
 	                                    if(p_component.childNodes[0].controls.rendered) {
@@ -1016,13 +1038,13 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
 	                        v_checkBox.checked = p_node.tag.checked;
                         }
-
+                        
                         break;
                     }
                 }
             };
 
-            var v_node = v_filterTree.createNode('<input id="' + v_filterTreeContainerDiv.id + '_input_checkbox_tree_filter_all" type="checkbox" value="all"/>(Selecionar todos os resultados)');
+            var v_node = v_filterTree.createNode('<input id="' + v_filterTreeContainerDiv.id + '_input_checkbox_tree_filter_all" type="checkbox" value="all"/>(Select all results)');
 
             v_node.tag = {
                 id: 'all',
@@ -1031,7 +1053,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             };
 
             if(p_text != null && p_text != '' && p_text.length > 0) {
-                var v_node = v_filterTree.createNode('<input id="' + v_filterTreeContainerDiv.id + '_input_checkbox_tree_filter_include" type="checkbox" value="include"/>(Adicionar seleção atual ao filtro)');
+                var v_node = v_filterTree.createNode('<input id="' + v_filterTreeContainerDiv.id + '_input_checkbox_tree_filter_include" type="checkbox" value="include"/>(Add actual selection to the filter)');
 
                 v_node.tag = {
                     id: 'include',
@@ -1151,7 +1173,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                 this.controls.editCell.editCellDatepicker.destroy();
             }
         },
-	/// <summary>
+        /// <summary>
         /// Clear grid data.
         /// </summary>
         clearData: function() {
@@ -1220,7 +1242,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                     var v_cellDiv = this.getCellDivAt(i, j);
 
                     if(v_cellDiv != null && !v_cellDiv.v_disabled) {
-                        this.updateCellDataAt(i, j, '')
+                        this.updateCellDataAt(i, j, '', 'rendered', false)
                     }
                 }
             }
@@ -1295,7 +1317,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                 this.controls.editCell.editCellDatepicker.destroy();
             }
 
-            this.updateCellDataAt(this.controls.editCell.row, this.controls.editCell.column, this.controls.editCell.editCellInput.value);
+            this.updateCellDataAt(this.controls.editCell.row, this.controls.editCell.column, this.controls.editCell.editCellInput.value, 'rendered', false);
             this.render();
             this.elements.dataGroupDiv.focus();
         },
@@ -1482,7 +1504,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                                );
 
 					                document.body.appendChild(v_cloneRow);
-
+	                                
 					                p_component.elements.draggableRowsGroupDiv.childNodes[p_row].classList.add('grid-ghost');
 					                p_component.elements.dataGroupDiv.childNodes[p_row].classList.add('grid-ghost');
 
@@ -1490,7 +1512,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
 	                                var v_dragRowFunction = function(p_component, p_row, p_event) {
 	                                    if(p_event.target.classList.contains('grid-row-move-target-img')) {
-	                                        var v_targetIndex = p_event.target.index;
+	                                        var v_targetIndex = p_event.target.index; 
 
 	                                        if(p_row > v_targetIndex) {
 	                                            v_targetIndex++;
@@ -1557,7 +1579,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                        v_img.style.bottom = '-8px';
 	                        v_img.index = i;
 	                        v_img.src = 'img/drag_target.png';
-                            v_img.title = 'Click here to drop the row at this position.'
+                            v_img.title = 'Click here to drop this row at this place.'
 
 	                        v_img.addEventListener(
 	                            'dragstart',
@@ -1574,7 +1596,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                            v_img.style.top = '-8px';
 	                            v_img.index = i - 1;
 	                            v_img.src = 'img/drag_target.png';
-                                v_img.title = 'Click here to drop the row at this position.'
+                                v_img.title = 'Click here to drop this row at this place.'
 
 	                            v_img.addEventListener(
 		                            'dragstart',
@@ -1613,7 +1635,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
                         v_cellDiv.v_renderer = this.columns[j].type;
 
-                        if(this.columns[j].disabled) {
+                        if(this.columns[j].disabled) { 
                             v_cellDiv.classList.add('grid-cell-disabled');
                             v_cellDiv.v_disabled = true;
                         }
@@ -1750,6 +1772,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                 this.callbacks.afterSelectCells(this, this.controls.selection);
             }
         },
+        /// <summary>
         /// Sets cell cssText at a specified index.
         /// </summary>
         /// <param name="p_row">The row index of the cell.</param>
@@ -1762,7 +1785,6 @@ function startGrid(p_containerDivId, p_draggableRows) {
             this.data.rendered.raw.rows[p_row][p_column].cssText = p_cssText;
             this.data.rendered.string.rows[p_row][p_column].cssText = p_cssText;
         },
-        /// <summary>
         /// <summary>
         /// Starts editing a cell in the grid.
         /// </summary>
@@ -1831,39 +1853,39 @@ function startGrid(p_containerDivId, p_draggableRows) {
                         field: this.controls.editCell.editCellInput,
                         format: 'MM/DD/YYYY',
                         i18n: {
-                            previousMonth: 'Previous Month',
-                            nextMonth: 'Next Month',
+                            previousMonth: 'Mês Anterior', 
+                            nextMonth: 'Próximo Mês', 
                             months: [
-                                'January',
-                                'February',
-                                'March',
-                                'April',
-                                'May',
-                                'June',
-                                'July',
-                                'August',
-                                'September',
-                                'October',
-                                'November',
-                                'December'
+                                'Janeiro',
+                                'Fevereiro',
+                                'Março',
+                                'Abril',
+                                'Maio',
+                                'Junho',
+                                'Julho',
+                                'Agosto',
+                                'Setembro',
+                                'Outubro',
+                                'Novembro',
+                                'Dezembro'
                             ],
                             weekdays: [
-                                'Sunday',
-                                'Monday',
-                                'Tuesday',
-                                'Wednesday',
-                                'Thursday',
-                                'Friday',
-                                'Saturday'
+                                'Domingo',
+                                'Segunda',
+                                'Terça',
+                                'Quarta',
+                                'Quinta',
+                                'Sexta',
+                                'Sábado'
                             ],
                             weekdaysShort: [
-                                'Sun',
-                                'Mon',
-                                'Tue',
-                                'Wed',
-                                'Thu',
-                                'Fri',
-                                'Sat'
+                                'Dom',
+                                'Seg',
+                                'Ter',
+                                'Qua',
+                                'Qui',
+                                'Sex',
+                                'Sáb'
                             ]
                         }
                     });
@@ -1871,7 +1893,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                     this.controls.editCell.editCellDatepicker._o.onSelect = function(p_component, p_date) {
                         p_component.controls.editCell.editCellInput.value = this.getMoment().format('MM/DD/YYYY');
                         p_component.endCellEdit();
-
+                        
                         document.removeEventListener(
                             'click',
                             document.endEditCellFunction
@@ -1923,16 +1945,23 @@ function startGrid(p_containerDivId, p_draggableRows) {
         /// <param name="p_column">The column index of the cell that value will be changed.</param>
         /// <paramref name="p_column">Takes an integer.
         /// <param name="p_newValue">The new cell content.</param>
-        /// <paramref name="p_newValue">Takes an string.
-        updateCellDataAt: function(p_row, p_column, p_newValue) {
-            if((p_row > this.data.rendered.raw.rows.length - 1) || (p_column > this.columns.length - 1)) {
-                return;
+        /// <paramref name="p_newValue">Takes a string.
+        /// <param name="p_dataMode">If the index is to be applied in all data or in rendered(filtered) data.</param>
+        /// <paramref name="p_dataMode">Takes a string between 'all' and 'rendered'.
+        /// <param name="p_preventCallback">If we should avoid calling 'afterChangeCellData' callback.</param>
+        /// <paramref name="p_preventCallback">Takes a boolean.
+        updateCellDataAt: function(p_row, p_column, p_newValue, p_dataMode, p_preventCallback) {
+            var v_oldValue = '';
+
+            if(p_dataMode == 'rendered') {
+                v_oldValue = this.data.rendered.raw.rows[p_row][p_column].value;
+            }
+            else if(p_dataMode == 'all') {
+                v_oldValue = this.data.all.raw.rows[p_row][p_column].value;
             }
 
-            var v_oldValue = this.data.rendered.raw.rows[p_row][p_column].value;
-
             var v_newValue = p_newValue;
-
+           
             if(this.columns[p_column].type == 'combobox') {
                 if(v_newValue == '') {
                     return;
@@ -1976,12 +2005,64 @@ function startGrid(p_containerDivId, p_draggableRows) {
                 }
             }
 
-            this.data.rendered.raw.rows[p_row][p_column].value = v_newValue;
-            this.data.rendered.string.rows[p_row][p_column].value = String(v_newValue);
-
             if(v_oldValue != v_newValue) {
-                if(this.callbacks.afterChangeCellData != null) {
-                    this.callbacks.afterChangeCellData(this.controls.editCell.row, this.controls.editCell.column, v_oldValue, v_newValue);
+                var v_isFiltered = null;
+
+                if(p_dataMode == 'rendered') {
+                    v_isFiltered = true;
+
+                    this.data.rendered.raw.rows[p_row][p_column].value = v_newValue;
+                    this.data.rendered.string.rows[p_row][p_column].value = String(v_newValue);
+
+                    //Check if the new value is in the column filter, if it's the case (If we should remove the row from rendered ones)
+                    if(this.columns[p_column].hasFilter) {
+                        if(this.columns[p_column].filter.isFiltered) {
+                            if(this.columns[p_column].filter.selectedValues.indexOf(String(v_newValue)) == -1) {
+                                v_isFiltered = false;
+
+                                var v_rawIndexOf = this.data.rendered.raw.rows[p_row].filteredByColumns.indexOf(p_column);
+
+                                if(v_rawIndexOf != -1) {
+                                    this.data.rendered.raw.rows[p_row].filteredByColumns.splice(v_rawIndexOf, 1);
+                                }
+
+                                var v_stringIndexOf = this.data.rendered.string.rows[p_row].filteredByColumns.indexOf(p_column);
+
+                                if(v_stringIndexOf != -1) {
+                                    this.data.rendered.string.rows[p_row].filteredByColumns.splice(v_stringIndexOf, 1);
+                                }
+                            }
+                        }
+                    }
+	            }
+	            else if(p_dataMode == 'all') {
+                    v_isFiltered = true;
+
+	                this.data.all.raw.rows[p_row][p_column].value = v_newValue;
+	                this.data.all.string.rows[p_row][p_column].value = String(v_newValue);
+
+                    //Check if the new value is in the column filter, if it's the case (If we should include the row among rendered ones)
+                    if(this.data.all.raw.rows[p_row].filteredByColumns.indexOf(p_column) == -1) {
+                        v_isFiltered = false;
+
+	                    if(this.columns[p_column].hasFilter) {
+	                        if(this.columns[p_column].filter.isFiltered) {
+	                            if(this.columns[p_column].filter.selectedValues.indexOf(String(v_newValue)) != -1) {
+                                    v_isFiltered = true;
+
+                                    this.data.all.raw.rows[p_row].filteredByColumns.push(p_column);
+                                    this.data.rendered.raw.rows.push(this.data.all.raw.rows[p_row]);
+
+                                    this.data.all.string.rows[p_row].filteredByColumns.push(p_column);
+                                    this.data.rendered.string.rows.push(this.data.all.string.rows[p_row]);
+	                            }
+	                        }
+	                    }
+                    }
+	            }
+
+                if(!p_preventCallback && this.callbacks.afterChangeCellData != null) {
+                    this.callbacks.afterChangeCellData(this, p_row, p_column, v_oldValue, v_newValue, p_dataMode, v_isFiltered);
                 }
             }
         }
@@ -2015,7 +2096,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
         v_headerCornerDiv.classList.add('grid-header-corner');
         v_headerCornerDiv.style.width = v_gridObject.configs.cellWidth + 1 + 'px';
         v_headerCornerDiv.style.height = v_gridObject.configs.headerHeight + 'px';
-        v_gridObject.elements.headerCornerDiv = v_headerCornerDiv;
+        v_gridObject.elements.headerCornerDiv = v_headerCornerDiv; 
         v_headerContainerDiv.appendChild(v_headerCornerDiv);
 
         var v_headerCornerInsideDiv = document.createElement('div');
@@ -2029,7 +2110,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
         v_draggableRowsGroupDiv.style.width = v_gridObject.configs.cellWidth + 1 + 'px';
         v_draggableRowsGroupDiv.style.paddingTop = v_gridObject.configs.headerHeight + 'px';
         v_gridObject.elements.draggableRowsGroupDiv = v_draggableRowsGroupDiv;
-        v_gridContainerDiv.appendChild(v_draggableRowsGroupDiv);
+        v_gridContainerDiv.appendChild(v_draggableRowsGroupDiv); 
     }
 
     var v_headerGroupDiv = document.createElement('div');
@@ -2066,7 +2147,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             if(p_event.path.length > 0) {
                 var v_found = false;
 
-                for(var k = 0; k < p_event.path.length && !v_found; k++) {
+                for(var k = 0; k < p_event.path.length && !v_found; k++) {                    
                     if(typeof p_event.path[k].activeElement != 'undefined' && typeof p_event.path[k].activeElement.classList != 'undefined') {
                         if(p_event.path[k].activeElement.classList.length > 0) {//Maybe it's a grid container
                             for(var i = 0; i < p_event.path[k].activeElement.classList.length && !v_found; i++) {
@@ -2076,7 +2157,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                             }
 
                             if(v_found) {
-                                var v_component = p_event.path[k].activeElement.parentNode.v_gridObject;
+                                var v_component = p_event.path[k].activeElement.parentNode.v_gridObject; 
                                 var v_selection = p_event.path[k].activeElement.parentNode.v_gridObject.controls.selection;
 
                                 var v_startRow = v_selection.startRow;
@@ -2123,7 +2204,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             if(p_event.path.length > 0) {
                 var v_found = false;
 
-                for(var k = 0; k < p_event.path.length && !v_found; k++) {
+                for(var k = 0; k < p_event.path.length && !v_found; k++) {                    
                     if(typeof p_event.path[k].activeElement != 'undefined' && typeof p_event.path[k].activeElement.classList != 'undefined') {
                         if(p_event.path[k].activeElement.classList.length > 0) {//Maybe it's a grid container
                             for(var i = 0; i < p_event.path[k].activeElement.classList.length && !v_found; i++) {
@@ -2132,7 +2213,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                                 }
                             }
 
-                            if(v_found) {
+                            if(v_found) {                               
                                 var v_component = p_event.path[k].activeElement.parentNode.v_gridObject;
                                 var v_selection = p_event.path[k].activeElement.parentNode.v_gridObject.controls.selection;
                                 var v_startRow = v_selection.startRow;
@@ -2151,7 +2232,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
                                     for(var j = 0; j < v_cells.length; j++) {
                                         if(!v_component.columns[v_startColumn + j].disabled) {
-                                            v_component.updateCellDataAt(v_startRow + i, v_startColumn + j, v_cells[j]);
+                                            v_component.updateCellDataAt(v_startRow + i, v_startColumn + j, v_cells[j], 'rendered', false);
                                         }
                                     }
                                 }
@@ -2176,7 +2257,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                 event.preventDefault();
                 event.stopPropagation();
                 document.execCommand('copy');
-            }
+            }   
             else if(p_event.code == 'KeyV' && (p_event.ctrlKey || p_event.metaKey)) {
                 document.execCommand('paste');
             }
@@ -2239,7 +2320,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             if(p_event.code == 'NumpadEnter' || p_event.code == 'Enter' || p_event.code == 'ArrowDown') {
                 p_component.endCellEdit();
                 p_component.moveSelector('ArrowDown', false);
-
+                
                 document.removeEventListener(
                     'click',
                     document.endEditCellFunction
@@ -2251,7 +2332,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             else if(p_event.code == 'ArrowUp') {
                 p_component.endCellEdit();
                 p_component.moveSelector('ArrowUp', false);
-
+                
                 document.removeEventListener(
                     'click',
                     document.endEditCellFunction
