@@ -434,7 +434,7 @@ SOFTWARE.*/
     z-index: 99999;
 }
 
-.grid-row-group:hover {
+.grid-row-group:hover .grid-cell {
     background-color: #e4e4e4 !important;
 }
 
