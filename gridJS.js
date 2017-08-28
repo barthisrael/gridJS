@@ -105,12 +105,12 @@ function startGrid(p_containerDivId, p_draggableRows) {
         //Set of functions to be called after some operations in grid component. After starting the grid component, you should replace the callbacks as you want.
         callbacks: {
             /// <summary>
-            /// Function called after a grid cell data is changed.
-            /// </summary>
+			/// Function called after a grid cell data is changed.
+			/// </summary>
             /// <param name="p_component">The grid component where changes were made.</param>
             /// <paramref name="p_component">Takes a javascript object.
-            /// <param name="p_row">The grid row number where changes were made.</param>
-            /// <paramref name="p_row">Takes an integer.
+			/// <param name="p_row">The grid row number where changes were made.</param>
+			/// <paramref name="p_row">Takes an integer.
             /// <param name="p_column">The grid column number where changes were made.</param>
             /// <paramref name="p_column">Takes an integer.
             /// <param name="p_oldValue">The previous value in the grid cell.</param>
@@ -260,7 +260,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             if(p_data.length != this.columns.length) {
                 return;
             }
-            
+
             var v_rawRow = [];
             v_rawRow.filteredByColumns = [];
 
@@ -275,9 +275,11 @@ function startGrid(p_containerDivId, p_draggableRows) {
                         return;
                     }
 
-                    var v_find = this.columns[i].source.find(function(p_element) {
-                        return p_element.text == v_rawValue;
-                    });
+                    var v_find = this.columns[i].source.find(
+                        function(p_element) {
+                            return p_element.text == v_rawValue;
+                        }
+                    );
 
                     if(v_find == null || v_find.length == 0) {
                         return;
@@ -566,7 +568,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             v_headerCell.appendChild(v_redimCell);
             this.elements.headerGroupDiv.appendChild(v_headerCell);
 
-            this.elements.containerDiv.style.width = this.elements.headerContainerDiv.offsetWidth + 'px';
+            this.elements.containerDiv.style.width = this.elements.headerContainerDiv.offsetWidth + 1 + 'px';
         },
         /// <summary>
         /// Builds the filter container div for a specified column.
@@ -599,7 +601,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             //Create button to clear all filters in the grid
             var v_clearAllFiltersDiv = document.createElement('div');
             v_clearAllFiltersDiv.classList.add('grid-filter-column-item');
-            v_clearAllFiltersDiv.innerHTML = '<img style="float: left; margin-left: 5px; margin-right: 5px;" src="img/clear.png" />Clean all table filters';
+            v_clearAllFiltersDiv.innerHTML = '<img style="float: left; margin-left: 5px; margin-right: 5px;" src="img/clear.png" />Clear all table filters';
 
             v_clearAllFiltersDiv.addEventListener(
                 'click',
@@ -909,7 +911,6 @@ function startGrid(p_containerDivId, p_draggableRows) {
             else {
                 p_column.filter.possibleValues.sort();
             }
-
             this.buildFilterTree('');
         },
         /// <summary>
@@ -1053,7 +1054,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             };
 
             if(p_text != null && p_text != '' && p_text.length > 0) {
-                var v_node = v_filterTree.createNode('<input id="' + v_filterTreeContainerDiv.id + '_input_checkbox_tree_filter_include" type="checkbox" value="include"/>(Add actual selection to the filter)');
+                var v_node = v_filterTree.createNode('<input id="' + v_filterTreeContainerDiv.id + '_input_checkbox_tree_filter_include" type="checkbox" value="include"/>(Add actual selection to filter)');
 
                 v_node.tag = {
                     id: 'include',
@@ -1480,7 +1481,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                        var v_img = document.createElement('img');
 	                        v_img.classList.add('grid-row-move-img');
 	                        v_img.src = 'img/move.png';
-                            v_img.title = 'Click here to move this row.';
+                            v_img.title = 'Click here to mover this row.';
 
 	                        v_img.addEventListener(
 	                            'dragstart',
@@ -1629,8 +1630,8 @@ function startGrid(p_containerDivId, p_draggableRows) {
                             v_cellDiv.innerHTML = this.data.rendered.raw.rows[i][j].value;
                         }
 
-                        if(this.data.rendered.raw.rows[i][j].cssText != null && typeof this.data.redenred.raw.rows[i][j].cssText == 'string') {
-                            v_cellDiv.style.cssText = this.data.redenred.raw.rows[i][j].cssText;
+                        if(this.data.rendered.raw.rows[i][j].cssText != null && typeof this.data.rendered.raw.rows[i][j].cssText == 'string') {
+                            v_cellDiv.style.cssText += this.data.rendered.raw.rows[i][j].cssText;
                         }
 
                         v_cellDiv.v_renderer = this.columns[j].type;
@@ -1853,39 +1854,39 @@ function startGrid(p_containerDivId, p_draggableRows) {
                         field: this.controls.editCell.editCellInput,
                         format: 'MM/DD/YYYY',
                         i18n: {
-                            previousMonth: 'Mês Anterior', 
-                            nextMonth: 'Próximo Mês', 
+                            previousMonth: 'Previous Month', 
+                            nextMonth: 'Next Month', 
                             months: [
-                                'Janeiro',
-                                'Fevereiro',
-                                'Março',
-                                'Abril',
-                                'Maio',
-                                'Junho',
-                                'Julho',
-                                'Agosto',
-                                'Setembro',
-                                'Outubro',
-                                'Novembro',
-                                'Dezembro'
+                                'January',
+                                'February',
+                                'March',
+                                'April',
+                                'May',
+                                'June',
+                                'July',
+                                'August',
+                                'September',
+                                'October',
+                                'November',
+                                'December'
                             ],
                             weekdays: [
-                                'Domingo',
-                                'Segunda',
-                                'Terça',
-                                'Quarta',
-                                'Quinta',
-                                'Sexta',
-                                'Sábado'
+                                'Sunday',
+                                'Monday',
+                                'Tuesday',
+                                'Wednesday',
+                                'Thursday',
+                                'Friday',
+                                'Saturday'
                             ],
                             weekdaysShort: [
-                                'Dom',
-                                'Seg',
-                                'Ter',
-                                'Qua',
-                                'Qui',
-                                'Sex',
-                                'Sáb'
+                                'Sun',
+                                'Mon',
+                                'Tue',
+                                'Wed',
+                                'Thu',
+                                'Fri',
+                                'Sat'
                             ]
                         }
                     });
