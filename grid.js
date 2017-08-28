@@ -1149,6 +1149,16 @@ function startGrid(p_containerDivId, p_draggableRows) {
                 this.controls.editCell.editCellDatepicker.destroy();
             }
         },
+	/// <summary>
+        /// Clear grid data.
+        /// </summary>
+        clearData: function() {
+            this.data.all.raw.rows = [];
+            this.data.all.string.rows = [];
+            this.data.rendered.raw.rows = [];
+            this.data.rendered.string.rows = [];
+            this.render();
+        },
         /// <summary>
         /// Clear grid selection.
         /// </summary>
