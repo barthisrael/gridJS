@@ -26,16 +26,16 @@ SOFTWARE.*/
 /// <param name="p_searchElement">Javascript element to be searched for.</param>
 Array.prototype.binaryIndexOf = function(p_searchElement) {
     'use strict';
-
+ 
     var v_minIndex = 0;
     var v_maxIndex = this.length - 1;
     var v_currentIndex;
     var v_currentElement;
-
+ 
     while(v_minIndex <= v_maxIndex) {
         v_currentIndex = (v_minIndex + v_maxIndex) / 2 | 0;
         v_currentElement = this[v_currentIndex];
-
+ 
         if(v_currentElement < p_searchElement) {
             v_minIndex = v_currentIndex + 1;
         }
@@ -46,7 +46,7 @@ Array.prototype.binaryIndexOf = function(p_searchElement) {
             return v_currentIndex;
         }
     }
-
+ 
     return -1;
 }
 
@@ -248,7 +248,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             if(p_data.length != this.columns.length) {
                 return;
             }
-
+            
             var v_rawRow = [];
             v_rawRow.filteredByColumns = [];
 
@@ -296,7 +296,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                     }
                 }
                 else if(this.columns[i].type == 'datepicker') {
-                    if(v_rawValue != '' && !moment(v_rawValue, 'MM-DD-YYYY').isValid()) {
+                    if(v_rawValue != '' && !moment(v_rawValue, 'DD-MM-YYYY').isValid()) {
                         return;
                     }
                 }
@@ -443,8 +443,8 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
             if(v_column.hasFilter) {
                 var v_img = document.createElement('img');
-                v_img.src = 'img/filter.png'
-                v_img.title = 'Click to filter column ' + v_column.name + '.';
+                v_img.src = '/theme/js/GridNew/img/filter.png'
+                v_img.title = 'Clique para filtrar a coluna ' + v_column.name + '.';
                 v_img.classList.add('img-grid-header-filter');
 
                 v_img.addEventListener(
@@ -456,11 +456,11 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
                 v_headerCell.appendChild(v_img);
             }
-
+            
             var v_redimCell = document.createElement('div');
             v_redimCell.style.height = this.configs.headerHeight + 'px';
             v_redimCell.classList.add('grid-header-cell-redim');
-            v_redimCell.title = 'Click and drag to redimension the column ' + v_column.name + '.';
+            v_redimCell.title = 'Clique e arraste para redimensionar a coluna ' + v_column.name + '.';
 
             v_redimCell.addEventListener(
                 'mousedown',
@@ -506,7 +506,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
                                 //Resize data cells
                                 for(var i = 0; i < p_component.elements.dataGroupDiv.childNodes.length; i++) {
-                                    p_component.elements.dataGroupDiv.childNodes[i].childNodes[p_component.controls.resizeColumn.index].style.width = v_newWidth + 'px';
+                                    p_component.elements.dataGroupDiv.childNodes[i].childNodes[p_component.controls.resizeColumn.index].style.width = v_newWidth + 'px';                  
                                 }
 
                                 //Refreshing selection
@@ -532,7 +532,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                     );
 
                     document.body.appendChild(v_resizeReturn);
-
+                    
                     p_component.controls.resizeColumn.startWidth = p_event.screenX;
                     p_component.controls.resizeColumn.index = p_index;
                     p_component.controls.resizeColumn.resizeDiv = v_resizeReturn;
@@ -557,7 +557,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             this.controls.filterColumn.clearAllFilters = false;
 
             //Save previous filtered values
-            p_column.filter.previousSelectedValues = [];
+            p_column.filter.previousSelectedValues = []; 
 
             for(var i = 0; i < p_column.filter.selectedValues.length; i++) {
                 p_column.filter.previousSelectedValues.push(p_column.filter.selectedValues[i]);
@@ -575,7 +575,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             //Create button to clear all filters in the grid
             var v_clearAllFiltersDiv = document.createElement('div');
             v_clearAllFiltersDiv.classList.add('grid-filter-column-item');
-            v_clearAllFiltersDiv.innerHTML = '<img style="float: left; margin-left: 5px; margin-right: 5px;" src="img/clear.png" />Limpar todos os filtros da tabela';
+            v_clearAllFiltersDiv.innerHTML = '<img style="float: left; margin-left: 5px; margin-right: 5px;" src="/theme/js/GridNew/img/clear.png" />Limpar todos os filtros da tabela';
 
             v_clearAllFiltersDiv.addEventListener(
                 'click',
@@ -615,7 +615,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             var v_filterTreeInput = document.createElement('input');
             v_filterTreeInput.type = 'text';
             v_filterTreeInput.classList.add('form-control');
-            v_filterTreeInput.placeholder = 'Search...';
+            v_filterTreeInput.placeholder = 'Pesquisar...';
             v_filterTreeInput.style.width = '97%';
 
             v_filterTreeInput.addEventListener(
@@ -654,7 +654,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
             //Create button to cancel grid filtering
             var v_cancelFilteringButton = document.createElement('button');
-            v_cancelFilteringButton.innerHTML = 'Cancel';
+            v_cancelFilteringButton.innerHTML = 'Cancelar';
             v_cancelFilteringButton.style.float = 'right';
             v_cancelFilteringButton.style.marginRight = '5px';
             v_cancelFilteringButton.style.marginTop = '6px';
@@ -729,9 +729,9 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                    }
                     }
 
-                    //Converts to a better search engine
+                    //Converts to a better search engine 
                     p_component.controls.filterColumn.column.filter.selectedValues = p_component.controls.filterColumn.column.filter.selectedValues.unique();
-
+                    console.time('converting')
                     for(var i = 0; i < p_component.columns.length; i++) {
                         if(p_component.columns[i].hasFilter) {
                             p_component.columns[i].filter.selectedValues = p_component.columns[i].filter.selectedValues.unique();
@@ -745,7 +745,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 				            );
                         }
                     }
-
+                    console.timeEnd('converting')
                     //Get new grid data, apllying all filters (old existing filters on other columns and the new one on actual column)
                     p_component.data.rendered.raw.rows = [];
                     p_component.data.rendered.string.rows = [];
@@ -817,7 +817,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             }
 
             var v_possibleRows = [];
-
+            console.time('possibleRows')
             for(var i = 0; i < this.data.all.string.rows.length; i++) {
                 v_possibleRows.push(this.data.all.string.rows[i]);
             }
@@ -832,8 +832,9 @@ function startGrid(p_containerDivId, p_draggableRows) {
                 return true;
             });
 
+            console.timeEnd('possibleRows')
             p_column.filter.possibleValues = [];
-
+            console.time('possibleValues')
             var v_columnIndex = this.columns.indexOf(p_column);
 
             for(var i = 0; i < v_possibleRows.length; i++) {
@@ -842,6 +843,8 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
             p_column.filter.possibleValues = p_column.filter.possibleValues.unique();
 
+            console.timeEnd('possibleValues')
+            console.time('sort')
             //If we must order by date, by number or by text
             if(p_column.type == 'datepicker') {
                 var v_compare = function(p_date1, p_date2) {
@@ -885,8 +888,10 @@ function startGrid(p_containerDivId, p_draggableRows) {
             else {
                 p_column.filter.possibleValues.sort();
             }
-
+            console.timeEnd('sort')
+            console.time('tree')
             this.buildFilterTree('');
+            console.timeEnd('tree')
         },
         /// <summary>
         /// Builds the filter tree inside the filter container div.
@@ -958,7 +963,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
 	                                v_checkBoxInclude.checked = p_node.tag.checked;
                                 }
-
+                                
                                 break;
                             }
                         }
@@ -986,7 +991,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 			                            for(var i = 0; i < p_component.childNodes.length; i++) {
 			                                if(p_component.childNodes[i].tag.type == 'item') {
 			                                    v_numItems++;
-
+	                                                  
 			                                    if(p_component.childNodes[i].tag.checked) {
 			                                        v_numChecked++;
 			                                    }
@@ -1002,7 +1007,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 			                            }
 			                        }
 			                        else {
-			                            //If a item was unchecked then we guarantee that not all items are selected
+			                            //If a item was unchecked then we guarantee that not all items are selected      
 		                                p_component.childNodes[0].tag.checked = false;
 
 	                                    if(p_component.childNodes[0].controls.rendered) {
@@ -1014,7 +1019,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
 	                        v_checkBox.checked = p_node.tag.checked;
                         }
-
+                        
                         break;
                     }
                 }
@@ -1150,6 +1155,16 @@ function startGrid(p_containerDivId, p_draggableRows) {
             }
         },
         /// <summary>
+        /// Clear grid data.
+        /// </summary>
+        clearData: function() {
+            this.data.all.raw.rows = [];
+            this.data.all.string.rows = [];
+            this.data.rendered.raw.rows = [];
+            this.data.rendered.string.rows = [];
+            this.render();
+        },
+        /// <summary>
         /// Clear grid selection.
         /// </summary>
         clearSelection: function() {
@@ -1180,7 +1195,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
             var v_img = document.createElement('img');
             v_img.classList.add('grid-cell-open-img');
-            v_img.src = 'img/open.png';
+            v_img.src = '/theme/js/GridNew/img/open.png';
             v_cellDiv.appendChild(v_img);
 
             v_img.addEventListener(
@@ -1435,8 +1450,8 @@ function startGrid(p_containerDivId, p_draggableRows) {
                         if(v_allowDrag) {
 	                        var v_img = document.createElement('img');
 	                        v_img.classList.add('grid-row-move-img');
-	                        v_img.src = 'img/move.png';
-                            v_img.title = 'Click here to move this row.';
+	                        v_img.src = '/theme/js/GridNew/img/move.png';
+                            v_img.title = 'Clique aqui para mover esta linha.';
 
 	                        v_img.addEventListener(
 	                            'dragstart',
@@ -1460,7 +1475,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                                );
 
 					                document.body.appendChild(v_cloneRow);
-
+	                                
 					                p_component.elements.draggableRowsGroupDiv.childNodes[p_row].classList.add('grid-ghost');
 					                p_component.elements.dataGroupDiv.childNodes[p_row].classList.add('grid-ghost');
 
@@ -1468,7 +1483,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
 	                                var v_dragRowFunction = function(p_component, p_row, p_event) {
 	                                    if(p_event.target.classList.contains('grid-row-move-target-img')) {
-	                                        var v_targetIndex = p_event.target.index;
+	                                        var v_targetIndex = p_event.target.index; 
 
 	                                        if(p_row > v_targetIndex) {
 	                                            v_targetIndex++;
@@ -1534,8 +1549,8 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                        v_img.classList.add('grid-row-move-target-img');
 	                        v_img.style.bottom = '-8px';
 	                        v_img.index = i;
-	                        v_img.src = 'img/drag_target.png';
-                            v_img.title = 'Click here to drop the row at this position.'
+	                        v_img.src = '/theme/js/GridNew/img/drag_target.png';
+                            v_img.title = 'Clique aqui para soltar a linha nesta posição.'
 
 	                        v_img.addEventListener(
 	                            'dragstart',
@@ -1551,8 +1566,8 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                            v_img.classList.add('grid-row-move-target-img');
 	                            v_img.style.top = '-8px';
 	                            v_img.index = i - 1;
-	                            v_img.src = 'img/drag_target.png';
-                                v_img.title = 'Click here to drop the row at this position.'
+	                            v_img.src = '/theme/js/GridNew/img/drag_target.png';
+                                v_img.title = 'Clique aqui para soltar a linha nesta posição.'
 
 	                            v_img.addEventListener(
 		                            'dragstart',
@@ -1589,7 +1604,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
                         v_cellDiv.v_renderer = this.columns[j].type;
 
-                        if(this.columns[j].disabled) {
+                        if(this.columns[j].disabled) { 
                             v_cellDiv.classList.add('grid-cell-disabled');
                             v_cellDiv.v_disabled = true;
                         }
@@ -1792,49 +1807,49 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
                     this.controls.editCell.editCellDatepicker = new Pikaday({
                         field: this.controls.editCell.editCellInput,
-                        format: 'MM/DD/YYYY',
+                        format: 'DD/MM/YYYY',
                         i18n: {
-                            previousMonth: 'Previous Month',
-                            nextMonth: 'Next Month',
+                            previousMonth: 'Mês Anterior', 
+                            nextMonth: 'Próximo Mês', 
                             months: [
-                                'January',
-                                'February',
-                                'March',
-                                'April',
-                                'May',
-                                'June',
-                                'July',
-                                'August',
-                                'September',
-                                'October',
-                                'November',
-                                'December'
+                                'Janeiro',
+                                'Fevereiro',
+                                'Março',
+                                'Abril',
+                                'Maio',
+                                'Junho',
+                                'Julho',
+                                'Agosto',
+                                'Setembro',
+                                'Outubro',
+                                'Novembro',
+                                'Dezembro'
                             ],
                             weekdays: [
-                                'Sunday',
-                                'Monday',
-                                'Tuesday',
-                                'Wednesday',
-                                'Thursday',
-                                'Friday',
-                                'Saturday'
+                                'Domingo',
+                                'Segunda',
+                                'Terça',
+                                'Quarta',
+                                'Quinta',
+                                'Sexta',
+                                'Sábado'
                             ],
                             weekdaysShort: [
-                                'Sun',
-                                'Mon',
-                                'Tue',
-                                'Wed',
-                                'Thu',
-                                'Fri',
-                                'Sat'
+                                'Dom',
+                                'Seg',
+                                'Ter',
+                                'Qua',
+                                'Qui',
+                                'Sex',
+                                'Sáb'
                             ]
                         }
                     });
 
                     this.controls.editCell.editCellDatepicker._o.onSelect = function(p_component, p_date) {
-                        p_component.controls.editCell.editCellInput.value = this.getMoment().format('MM/DD/YYYY');
+                        p_component.controls.editCell.editCellInput.value = this.getMoment().format('DD/MM/YYYY');
                         p_component.endCellEdit();
-
+                        
                         document.removeEventListener(
                             'click',
                             document.endEditCellFunction
@@ -1895,7 +1910,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             var v_oldValue = this.data.rendered.raw.rows[p_row][p_column].value;
 
             var v_newValue = p_newValue;
-
+           
             if(this.columns[p_column].type == 'combobox') {
                 if(v_newValue == '') {
                     return;
@@ -1934,7 +1949,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                 }
             }
             else if(this.columns[p_column].type == 'datepicker') {
-                if(v_newValue != '' && !moment(v_newValue, 'MM-DD-YYYY').isValid()) {
+                if(v_newValue != '' && !moment(v_newValue, 'DD-MM-YYYY').isValid()) {
                     return;
                 }
             }
@@ -1978,7 +1993,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
         v_headerCornerDiv.classList.add('grid-header-corner');
         v_headerCornerDiv.style.width = v_gridObject.configs.cellWidth + 1 + 'px';
         v_headerCornerDiv.style.height = v_gridObject.configs.headerHeight + 'px';
-        v_gridObject.elements.headerCornerDiv = v_headerCornerDiv;
+        v_gridObject.elements.headerCornerDiv = v_headerCornerDiv; 
         v_headerContainerDiv.appendChild(v_headerCornerDiv);
 
         var v_headerCornerInsideDiv = document.createElement('div');
@@ -1992,7 +2007,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
         v_draggableRowsGroupDiv.style.width = v_gridObject.configs.cellWidth + 1 + 'px';
         v_draggableRowsGroupDiv.style.paddingTop = v_gridObject.configs.headerHeight + 'px';
         v_gridObject.elements.draggableRowsGroupDiv = v_draggableRowsGroupDiv;
-        v_gridContainerDiv.appendChild(v_draggableRowsGroupDiv);
+        v_gridContainerDiv.appendChild(v_draggableRowsGroupDiv); 
     }
 
     var v_headerGroupDiv = document.createElement('div');
@@ -2029,7 +2044,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             if(p_event.path.length > 0) {
                 var v_found = false;
 
-                for(var k = 0; k < p_event.path.length && !v_found; k++) {
+                for(var k = 0; k < p_event.path.length && !v_found; k++) {                    
                     if(typeof p_event.path[k].activeElement != 'undefined' && typeof p_event.path[k].activeElement.classList != 'undefined') {
                         if(p_event.path[k].activeElement.classList.length > 0) {//Maybe it's a grid container
                             for(var i = 0; i < p_event.path[k].activeElement.classList.length && !v_found; i++) {
@@ -2039,7 +2054,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                             }
 
                             if(v_found) {
-                                var v_component = p_event.path[k].activeElement.parentNode.v_gridObject;
+                                var v_component = p_event.path[k].activeElement.parentNode.v_gridObject; 
                                 var v_selection = p_event.path[k].activeElement.parentNode.v_gridObject.controls.selection;
 
                                 var v_startRow = v_selection.startRow;
@@ -2086,7 +2101,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             if(p_event.path.length > 0) {
                 var v_found = false;
 
-                for(var k = 0; k < p_event.path.length && !v_found; k++) {
+                for(var k = 0; k < p_event.path.length && !v_found; k++) {                    
                     if(typeof p_event.path[k].activeElement != 'undefined' && typeof p_event.path[k].activeElement.classList != 'undefined') {
                         if(p_event.path[k].activeElement.classList.length > 0) {//Maybe it's a grid container
                             for(var i = 0; i < p_event.path[k].activeElement.classList.length && !v_found; i++) {
@@ -2095,7 +2110,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                                 }
                             }
 
-                            if(v_found) {
+                            if(v_found) {                               
                                 var v_component = p_event.path[k].activeElement.parentNode.v_gridObject;
                                 var v_selection = p_event.path[k].activeElement.parentNode.v_gridObject.controls.selection;
                                 var v_startRow = v_selection.startRow;
@@ -2139,7 +2154,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                 event.preventDefault();
                 event.stopPropagation();
                 document.execCommand('copy');
-            }
+            }   
             else if(p_event.code == 'KeyV' && (p_event.ctrlKey || p_event.metaKey)) {
                 document.execCommand('paste');
             }
@@ -2202,7 +2217,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             if(p_event.code == 'NumpadEnter' || p_event.code == 'Enter' || p_event.code == 'ArrowDown') {
                 p_component.endCellEdit();
                 p_component.moveSelector('ArrowDown', false);
-
+                
                 document.removeEventListener(
                     'click',
                     document.endEditCellFunction
@@ -2214,7 +2229,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             else if(p_event.code == 'ArrowUp') {
                 p_component.endCellEdit();
                 p_component.moveSelector('ArrowUp', false);
-
+                
                 document.removeEventListener(
                     'click',
                     document.endEditCellFunction
