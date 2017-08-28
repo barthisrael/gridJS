@@ -117,8 +117,6 @@ function startGrid(p_containerDivId, p_draggableRows) {
             /// <param name="p_newValue">The new value in the grid cell.</param>
             /// <param name="p_dataMode">If the index is to be applied in all data or in rendered(filtered) data.</param>
             /// <paramref name="p_dataMode">Takes a string between 'all' and 'rendered'.
-            /// <param name="p_isFiltered">If the cell belongs to a row that is filtered after its value has changed.</param>
-            /// <paramref name="p_isFiltered">Takes a boolean.
             afterChangeCellData: null,
             /// <summary>
             /// Function called after this grid is rendered.
@@ -1054,7 +1052,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             };
 
             if(p_text != null && p_text != '' && p_text.length > 0) {
-                var v_node = v_filterTree.createNode('<input id="' + v_filterTreeContainerDiv.id + '_input_checkbox_tree_filter_include" type="checkbox" value="include"/>(Add actual selection to filter)');
+                var v_node = v_filterTree.createNode('<input id="' + v_filterTreeContainerDiv.id + '_input_checkbox_tree_filter_include" type="checkbox" value="include"/>(Add actual selection to the filter)');
 
                 v_node.tag = {
                     id: 'include',
@@ -1481,7 +1479,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                        var v_img = document.createElement('img');
 	                        v_img.classList.add('grid-row-move-img');
 	                        v_img.src = 'img/move.png';
-                            v_img.title = 'Click here to mover this row.';
+                            v_img.title = 'Click to move this row.';
 
 	                        v_img.addEventListener(
 	                            'dragstart',
@@ -1580,7 +1578,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                        v_img.style.bottom = '-8px';
 	                        v_img.index = i;
 	                        v_img.src = 'img/drag_target.png';
-                            v_img.title = 'Click here to drop this row at this place.'
+                            v_img.title = 'Click to drop the dragging row.'
 
 	                        v_img.addEventListener(
 	                            'dragstart',
@@ -1597,7 +1595,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                            v_img.style.top = '-8px';
 	                            v_img.index = i - 1;
 	                            v_img.src = 'img/drag_target.png';
-                                v_img.title = 'Click here to drop this row at this place.'
+                                v_img.title = 'Click to drop the dragging row.'
 
 	                            v_img.addEventListener(
 		                            'dragstart',
@@ -1771,6 +1769,45 @@ function startGrid(p_containerDivId, p_draggableRows) {
 
             if(this.callbacks.afterSelectCells != null) {
                 this.callbacks.afterSelectCells(this, this.controls.selection);
+            }
+        },
+         /// <summary>
+        /// Check if a given cell is under selection.
+        /// </summary>
+        /// <param name="p_row">The row index of the cell.</param>
+        /// <paramref name="p_row">Takes an integer.
+        /// <param name="p_column">The column index of the cell.</param>
+        /// <paramref name="p_column">Takes an integer.
+        /// <returns>A boolean indicating if contains or not</returns>
+        selectionContains: function(p_row,p_column) {
+            var v_startRow = 0;
+            var v_startColumn = 0;
+            var v_endRow = 0;
+            var v_endColumn = 0;
+
+            if(this.controls.selection.startRow < this.controls.selection.endRow) {
+                v_startRow = this.controls.selection.startRow;
+                v_endRow = this.controls.selection.endRow;
+            }
+            else {
+                v_startRow = this.controls.selection.endRow;
+                v_endRow = this.controls.selection.startRow;
+            }
+
+            if(this.controls.selection.startColumn < this.controls.selection.endColumn) {
+                v_startColumn = this.controls.selection.startColumn;
+                v_endColumn = this.controls.selection.endColumn;
+            }
+            else {
+                v_startColumn = this.controls.selection.endColumn;
+                v_endColumn = this.controls.selection.startColumn;
+            }
+
+            if(p_row >= v_startRow && p_row <= v_endRow && p_column >= v_startColumn && p_column <= v_endColumn) {
+                return true;
+            }
+            else {
+                return false;
             }
         },
         /// <summary>
@@ -2007,15 +2044,15 @@ function startGrid(p_containerDivId, p_draggableRows) {
             }
 
             if(v_oldValue != v_newValue) {
-                var v_isFiltered = null;
+                //var v_isFiltered = null;
 
                 if(p_dataMode == 'rendered') {
-                    v_isFiltered = true;
+                    //v_isFiltered = true;
 
                     this.data.rendered.raw.rows[p_row][p_column].value = v_newValue;
                     this.data.rendered.string.rows[p_row][p_column].value = String(v_newValue);
 
-                    //Check if the new value is in the column filter, if it's the case (If we should remove the row from rendered ones)
+                    /*//Check if the new value is in the column filter, if it's the case (If we should remove the row from rendered ones)
                     if(this.columns[p_column].hasFilter) {
                         if(this.columns[p_column].filter.isFiltered) {
                             if(this.columns[p_column].filter.selectedValues.indexOf(String(v_newValue)) == -1) {
@@ -2036,15 +2073,15 @@ function startGrid(p_containerDivId, p_draggableRows) {
                                 }
                             }
                         }
-                    }
+                    }*/
 	            }
 	            else if(p_dataMode == 'all') {
-                    v_isFiltered = true;
+                    //v_isFiltered = true;
 
 	                this.data.all.raw.rows[p_row][p_column].value = v_newValue;
 	                this.data.all.string.rows[p_row][p_column].value = String(v_newValue);
 
-                    //Check if the new value is in the column filter, if it's the case (If we should include the row among rendered ones)
+                    /*//Check if the new value is in the column filter, if it's the case (If we should include the row among rendered ones)
                     if(this.data.all.raw.rows[p_row].filteredByColumns.indexOf(p_column) == -1) {
                         v_isFiltered = false;
 
@@ -2061,11 +2098,11 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                            }
 	                        }
 	                    }
-                    }
+                    }*/
 	            }
 
                 if(!p_preventCallback && this.callbacks.afterChangeCellData != null) {
-                    this.callbacks.afterChangeCellData(this, p_row, p_column, v_oldValue, v_newValue, p_dataMode, v_isFiltered);
+                    this.callbacks.afterChangeCellData(this, p_row, p_column, v_oldValue, v_newValue, p_dataMode);
                 }
             }
         }
