@@ -203,7 +203,6 @@ function startGrid(p_containerDivId, p_draggableRows) {
             },
             selection: {
                 isSelecting: false,
-                selected: false,
                 startRow: -1,
                 startColumn: -1,
                 endRow: -1,
@@ -534,14 +533,12 @@ function startGrid(p_containerDivId, p_draggableRows) {
                                 }
 
                                 //Refreshing selection
-                                if(p_component.controls.selection.selected) {
-                                    p_component.selectCellRange(
-                                        p_component.controls.selection.startRow,
-                                        p_component.controls.selection.startColumn,
-                                        p_component.controls.selection.endRow,
-                                        p_component.controls.selection.endColumn
-                                    );
-                                }
+                                p_component.selectCellRange(
+                                    p_component.controls.selection.startRow,
+                                    p_component.controls.selection.startColumn,
+                                    p_component.controls.selection.endRow,
+                                    p_component.controls.selection.endColumn
+                                );
                             }
 
                             document.body.removeEventListener(
@@ -1043,7 +1040,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                 }
             };
 
-            var v_node = v_filterTree.createNode('<input id="' + v_filterTreeContainerDiv.id + '_input_checkbox_tree_filter_all" type="checkbox" value="all"/>(Select all results)');
+            var v_node = v_filterTree.createNode('<input id="' + v_filterTreeContainerDiv.id + '_input_checkbox_tree_filter_all" type="checkbox" value="all"/>(Selecionar todos os resultados)');
 
             v_node.tag = {
                 id: 'all',
@@ -1052,7 +1049,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
             };
 
             if(p_text != null && p_text != '' && p_text.length > 0) {
-                var v_node = v_filterTree.createNode('<input id="' + v_filterTreeContainerDiv.id + '_input_checkbox_tree_filter_include" type="checkbox" value="include"/>(Add actual selection to the filter)');
+                var v_node = v_filterTree.createNode('<input id="' + v_filterTreeContainerDiv.id + '_input_checkbox_tree_filter_include" type="checkbox" value="include"/>(Adicionar seleção atual ao filtro)');
 
                 v_node.tag = {
                     id: 'include',
@@ -1187,11 +1184,10 @@ function startGrid(p_containerDivId, p_draggableRows) {
         /// </summary>
         clearSelection: function() {
             if(!this.controls.selection.isSelecting) {
-                this.controls.selection.selected = false;
                 this.controls.selection.startRow = -1;
                 this.controls.selection.startColumn = -1;
-                this.controls.selection.selected = -1;
-                this.controls.selection.selected = -1;
+                this.controls.selection.endRow = -1;
+                this.controls.selection.endColumn = -1;
                 this.controls.selection.selectionDiv.style.display = 'none';
             }
 
@@ -1578,7 +1574,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                        v_img.style.bottom = '-8px';
 	                        v_img.index = i;
 	                        v_img.src = 'img/drag_target.png';
-                            v_img.title = 'Click to drop the dragging row.'
+                            v_img.title = 'Click to drop the row here.'
 
 	                        v_img.addEventListener(
 	                            'dragstart',
@@ -1595,7 +1591,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
 	                            v_img.style.top = '-8px';
 	                            v_img.index = i - 1;
 	                            v_img.src = 'img/drag_target.png';
-                                v_img.title = 'Click to drop the dragging row.'
+                                v_img.title = 'Click to drop the row here.'
 
 	                            v_img.addEventListener(
 		                            'dragstart',
@@ -1716,11 +1712,14 @@ function startGrid(p_containerDivId, p_draggableRows) {
         /// <param name="p_endColumn">The column index where selection ends.</param>
         /// <paramref name="p_endColumn">Takes an integer.
         selectCellRange: function(p_startRow, p_startColumn, p_endRow, p_endColumn) {
+            if(p_startRow == -1 || p_startColumn == -1 || p_endRow == -1 || p_endColumn == -1) {
+                return;
+            }
+
             this.controls.selection.startRow = p_startRow;
             this.controls.selection.startColumn = p_startColumn;
             this.controls.selection.endRow = p_endRow;
             this.controls.selection.endColumn = p_endColumn;
-            this.controls.selection.selected = true;
 
             var v_relativeRowStart  = this.controls.selection.startRow - this.controls.currentScrollIndex;
             var v_relativeRowEnd = this.controls.selection.endRow - this.controls.currentScrollIndex;
@@ -2521,7 +2520,7 @@ function startGrid(p_containerDivId, p_draggableRows) {
                 p_component.render();
             }
 
-            if(p_component.controls.selection.selected && !p_component.controls.selection.isSelecting) {
+            if(!p_component.controls.selection.isSelecting) {
                 p_component.selectCellRange(p_component.controls.selection.startRow, p_component.controls.selection.startColumn, p_component.controls.selection.endRow, p_component.controls.selection.endColumn);
             }
         }.bind(v_gridObject.elements.componentDiv, v_gridObject)
