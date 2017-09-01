@@ -107,12 +107,12 @@ function startGrid(p_containerDivId, p_draggableRows, p_preventClearOnBlur) {
         //Set of functions to be called after some operations in grid component. After starting the grid component, you should replace the callbacks as you want.
         callbacks: {
             /// <summary>
-            /// Function called after a grid cell data is changed.
-            /// </summary>
+			/// Function called after a grid cell data is changed.
+			/// </summary>
             /// <param name="p_component">The grid component where changes were made.</param>
             /// <paramref name="p_component">Takes a javascript object.
-            /// <param name="p_row">The grid row number where changes were made.</param>
-            /// <paramref name="p_row">Takes an integer.
+			/// <param name="p_row">The grid row number where changes were made.</param>
+			/// <paramref name="p_row">Takes an integer.
             /// <param name="p_column">The grid column number where changes were made.</param>
             /// <paramref name="p_column">Takes an integer.
             /// <param name="p_oldValue">The previous value in the grid cell.</param>
@@ -479,7 +479,7 @@ function startGrid(p_containerDivId, p_draggableRows, p_preventClearOnBlur) {
             if(v_column.hasFilter) {
                 var v_img = document.createElement('img');
                 v_img.src = 'img/filter.png'
-                v_img.title = 'Click to filter column ' + v_column.name + '.';
+                v_img.title = 'Click here to filter column ' + v_column.name + '.';
                 v_img.classList.add('img-grid-header-filter');
 
                 v_img.addEventListener(
@@ -533,7 +533,7 @@ function startGrid(p_containerDivId, p_draggableRows, p_preventClearOnBlur) {
                                 v_subtotalCell.style.width = v_newWidth + 'px';
 
                                 if(p_component.configs.draggableRows) {
-                                    p_component.elements.containerDiv.style.width = (p_component.elements.headerGroupDiv.offsetWidth + 1) + p_component.configs.cellWidth + 'px';
+					                p_component.elements.containerDiv.style.width = (p_component.elements.headerGroupDiv.offsetWidth + 1) + p_component.configs.cellWidth + 'px';
 					            }
                                 else {
                                     p_component.elements.containerDiv.style.width = (p_component.elements.headerGroupDiv.offsetWidth + 1) + 'px';
@@ -554,9 +554,9 @@ function startGrid(p_containerDivId, p_draggableRows, p_preventClearOnBlur) {
                             }
 
                             document.body.removeEventListener(
-	                        'mousemove',
-	                        horizontalResizeLine
-	                    );
+		                        'mousemove',
+		                        horizontalResizeLine
+		                    )
 
                             if(p_component.callbacks.afterResizeColumn != null) {
                                 p_component.callbacks.afterResizeColumn(p_component, p_component.controls.resizeColumn.index, v_newWidth);
@@ -744,7 +744,7 @@ function startGrid(p_containerDivId, p_draggableRows, p_preventClearOnBlur) {
                             for(var j = 0; j < v_isFilteredList.length; j++) {
                                 p_component.columns[v_isFilteredList[j]].filter.selectedValues.push(p_component.data.all.string.rows[i][v_isFilteredList[j]].value);
 
-                                if(p_component.data.all.raw.rows[i].filteredByColumns.indexOf(v_isFilteredList[j])) {
+                                if(p_component.data.all.raw.rows[i].filteredByColumns.indexOf(v_isFilteredList[j]) == -1) {
 	                                p_component.data.all.raw.rows[i].filteredByColumns.push(v_isFilteredList[j]);
 	                                p_component.data.all.string.rows[i].filteredByColumns.push(v_isFilteredList[j]);
                                 }
@@ -769,13 +769,13 @@ function startGrid(p_containerDivId, p_draggableRows, p_preventClearOnBlur) {
                         if(p_component.columns[i].hasFilter) {
                             p_component.columns[i].filter.selectedValues = p_component.columns[i].filter.selectedValues.unique();
 
-		            p_component.columns[i].filter.selectedValuesDict = p_component.columns[i].filter.selectedValues.reduce(
-		                function(p_dict, p_key) {
-		                    p_dict[p_key] = 1;
-		                    return p_dict;
-		                },
-		                {}
-		            );
+				            p_component.columns[i].filter.selectedValuesDict = p_component.columns[i].filter.selectedValues.reduce(
+				                function(p_dict, p_key) {
+				                    p_dict[p_key] = 1;
+				                    return p_dict;
+				                },
+				                {}
+				            );
                         }
                     }
 
@@ -814,7 +814,18 @@ function startGrid(p_containerDivId, p_draggableRows, p_preventClearOnBlur) {
                     }
 
                     //If some filter was applied to this column or not
-                    if(p_component.controls.filterColumn.column.filter.selectedValues.length < p_component.controls.filterColumn.column.filter.possibleValues.length) {
+                    var v_columnIndex = p_component.columns.indexOf(p_component.controls.filterColumn.column);
+                    var v_columnFiltered = false;
+
+                    for(var i = 0; i < p_component.data.all.string.rows.length; i++) {
+                        if(p_component.data.all.string.rows[i].filteredByColumns.indexOf(v_columnIndex) == -1) {
+                            v_columnFiltered = true;
+                            break;
+                        }
+                    }
+
+                    //if(p_component.controls.filterColumn.column.filter.selectedValues.length < p_component.controls.filterColumn.column.filter.possibleValues.length) {
+                    if(v_columnFiltered) {
                         if(!p_component.controls.filterColumn.headerCell.classList.contains('grid-header-cell-filtered')) {
                             p_component.controls.filterColumn.headerCell.classList.add('grid-header-cell-filtered')
                         }
@@ -980,7 +991,7 @@ function startGrid(p_containerDivId, p_draggableRows, p_preventClearOnBlur) {
                                 break;
                             }
                             case 'include': {
-		                var v_checkBoxInclude = document.getElementById(p_component.elements.componentDiv.id + '_input_checkbox_tree_filter_include');
+				                var v_checkBoxInclude = document.getElementById(p_component.elements.componentDiv.id + '_input_checkbox_tree_filter_include');
 
                                 if(v_checkBoxInclude != null) {
 	                                v_checkBoxInclude.addEventListener(
@@ -1489,7 +1500,7 @@ function startGrid(p_containerDivId, p_draggableRows, p_preventClearOnBlur) {
 	                        var v_img = document.createElement('img');
 	                        v_img.classList.add('grid-row-move-img');
 	                        v_img.src = 'img/move.png';
-                            v_img.title = 'Click to drag this row.';
+                            v_img.title = 'Click to start moving this row.';
 
 	                        v_img.addEventListener(
 	                            'dragstart',
@@ -1587,8 +1598,8 @@ function startGrid(p_containerDivId, p_draggableRows, p_preventClearOnBlur) {
 	                        v_img.classList.add('grid-row-move-target-img');
 	                        v_img.style.bottom = '-8px';
 	                        v_img.index = i;
-	                        v_img.src = 'drag_target.png';
-                            v_img.title = 'Click to drop this row here.'
+	                        v_img.src = 'img/drag_target.png';
+                            v_img.title = 'Click to drop the row here.'
 
 	                        v_img.addEventListener(
 	                            'dragstart',
@@ -1605,7 +1616,7 @@ function startGrid(p_containerDivId, p_draggableRows, p_preventClearOnBlur) {
 	                            v_img.style.top = '-8px';
 	                            v_img.index = i - 1;
 	                            v_img.src = 'img/drag_target.png';
-                                v_img.title = 'Click to drop this row here.'
+                                v_img.title = 'Click to drop the row here.'
 
 	                            v_img.addEventListener(
 		                            'dragstart',
